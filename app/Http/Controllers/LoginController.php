@@ -24,7 +24,7 @@ class LoginController extends Controller
         return response()->view('register');
     }
 
-    public function register(Request $request): Response
+    public function register(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -50,7 +50,7 @@ class LoginController extends Controller
 
         Auth::login($user);
 
-        return response()->noContent();
+        return redirect()->intended('/')->with('success','Registration complete');
     }
 
     public function login(Request $request): RedirectResponse
