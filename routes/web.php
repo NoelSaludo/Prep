@@ -16,15 +16,13 @@ Route::get('/register', [LoginController::class, 'showRegisterForm'])->name('reg
 
 // Process register form (POST)
 Route::post('/register', [LoginController::class, 'register']);
-
+//
 // Redirect root to login
 Route::get('/', function () {
     return redirect('/login');
 });
-
-// App route (protected)
-Route::post('/app', function () {
-    return response()->noContent();
+Route::get('/app', function () {
+    return view('app');
 })->middleware('auth');
 
 // Email verification routes
