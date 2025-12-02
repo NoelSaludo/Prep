@@ -16,6 +16,7 @@ return new class extends Migration
             $table->timestamp('created_date')->useCurrent();
             $table->timestamp('updated_date')->useCurrent();
             $table->timestamp('email_verified_at');
+            $table->rememberToken('remember_token');
         });
     }
 

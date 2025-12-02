@@ -9,8 +9,8 @@
     <h1>Register</h1>
     <form method="POST" action="{{ url('/register') }}">
         @csrf
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required><br>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br>
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" required><br>
         <label for="password">Password:</label>

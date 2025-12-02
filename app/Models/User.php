@@ -14,15 +14,17 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected $table = 'users';
     public $incrementing = false;
+    public $timestamps = false;
     protected $keyType = 'uuid';
+
 
     protected $fillable = [
         'id',
         'username',
         'email',
         'password',
-        'created_at',
-        'udpated_at',
+        'created_date',
+        'updated_date',
     ];
 
     public function favoriteRecipes(): BelongsToMany

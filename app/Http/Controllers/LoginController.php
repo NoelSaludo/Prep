@@ -27,7 +27,7 @@ class LoginController extends Controller
     public function register(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
         ]);
@@ -41,7 +41,7 @@ class LoginController extends Controller
         }
 
         $user = UserFactory::new()->create([
-            'name' => $validated['name'],
+            'username' => $validated['username'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
@@ -49,10 +49,6 @@ class LoginController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
-
-        if (!$user->hasVerifiedEmail()) {
-            return redirect()->route('verification.notice');
-        }
 
         return redirect()->intended('/')->with('success','Registration complete');
     }
