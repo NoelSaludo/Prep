@@ -5,18 +5,29 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 
-Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+// Display login page (GET)
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 
+// Process login form (POST)
 Route::post('/login', [LoginController::class, 'login']);
+
+// Display register page (GET)
 Route::get('/register', [LoginController::class, 'showRegisterForm'])->name('register');
+
+// Process register form (POST)
 Route::post('/register', [LoginController::class, 'register']);
+
+// Redirect root to login
+Route::get('/', function () {
+    return redirect('/login');
+});
+
+// App route (protected)
 Route::post('/app', function () {
     return response()->noContent();
 })->middleware('auth');
 
+// Email verification routes
 Route::get('/email/verify', function () {
     return view('auth.verify-email');
 })->middleware('auth')->name('verification.notice');
@@ -26,7 +37,6 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 
     return redirect('/home');
 })->middleware(['auth', 'signed'])->name('verification.verify');
-
 
 Route::post('/email/verification-notification', function (Request $request) {
     $request->user()->sendEmailVerificationNotification();
