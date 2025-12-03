@@ -2,74 +2,70 @@
 
 namespace App\Http\Controllers;
 
-use Database\Factories\UserFactory;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class LoginController extends Controller
 {
-    public function showLoginForm(): Response
+    // Show login form
+    public function showLoginForm()
     {
-        return response()->view('login');
+        return view('login');
     }
 
-    public function showRegisterForm(): Response
+    // Show register form
+    public function showRegisterForm()
     {
-        return response()->view('register');
+        return view('register');
     }
 
-    public function register(Request $request): RedirectResponse
+    // Process login
+    public function login(Request $request)
     {
-        $validated = $request->validate([
-            'username' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
         ]);
 
-        $userExists = User::where('email', $validated['email'])->exists();
-
-        if ($userExists) {
-            throw ValidationException::withMessages([
-                'email' => ['The email has already been taken.'],
-            ]);
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->intended('/dashboard');
         }
 
-        $user = UserFactory::new()->create([
-            'username' => $validated['username'],
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ])->onlyInput('email');
+    }
+
+    // Process registration
+    public function register(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        $user = User::create([
+            'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
 
-        event(new Registered($user));
-
         Auth::login($user);
 
-        return redirect()->intended('/')->with('success','Registration complete');
+        return redirect('/dashboard');
     }
 
-    public function login(Request $request): RedirectResponse
+    // Logout
+    public function logout(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
-
-        if (!Auth::attempt($credentials)) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
-        }
-
-        $request->session()->regenerate();
-
-        return redirect()
-            ->intended('/app')
-            ->with('Success', 'Logged in successfully.');
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        
+        return redirect('/login');
     }
 }
