@@ -22,7 +22,7 @@ Route::post('/register', [LoginController::class, 'register']);
 Route::get('/', function () {
     return redirect('/login');
 });
-Route::get('/app', function () {
+Route::get('/dashboard', function () {
     return view('app');
 })->middleware('auth');
 
@@ -38,9 +38,11 @@ Route::get('/email/verify', function () {
     return view('auth.verify-email');
 })->middleware('auth')->name('verification.notice');
 
-Route::get('/email/verify/{id}/{hash}', [LoginController::class, 'completeRegistration'])
-    ->middleware(['auth', 'signed'])
-    ->name('verification.verify');
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+
+    return redirect('/dashboard');
+})->middleware(['auth', 'signed'])->name('verification.verify');
 
 Route::post('/email/verification-notification', function (Request $request) {
     $request->user()->sendEmailVerificationNotification();
