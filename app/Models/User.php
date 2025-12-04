@@ -27,6 +27,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'updated_date',
     ];
 
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
     public function favoriteRecipes(): BelongsToMany
     {
         return $this->belongsToMany(Recipe::class, 'favorite_recipes', 'user_id', 'recipe_id');

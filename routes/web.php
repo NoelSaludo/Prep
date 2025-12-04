@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\AppController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
@@ -16,18 +17,23 @@ Route::get('/register', [LoginController::class, 'showRegisterForm'])->name('reg
 
 // Process register form (POST)
 Route::post('/register', [LoginController::class, 'register']);
-
+//
 // Redirect root to login
 Route::get('/', function () {
     return redirect('/login');
 });
-
-// App route (protected)
-Route::post('/app', function () {
-    return response()->noContent();
+Route::get('/dashboard', function () {
+    return view('app');
 })->middleware('auth');
 
 // Email verification routes
+Route::middleware('auth')->group(function () {
+    Route::get('/api/recipes', [AppController::class, 'fetchAllRecipe']);
+    Route::post('/api/recipes/search-ingredients', [AppController::class, 'searchRecipebyIngredient']);
+    Route::post('/api/recipes/toggle-filter/{name}', [AppController::class, 'toggleFilter']);
+    Route::post('/api/recipes/{id}/favorite', [AppController::class, 'addToFavorite']);
+});
+
 Route::get('/email/verify', function () {
     return view('auth.verify-email');
 })->middleware('auth')->name('verification.notice');
@@ -35,7 +41,7 @@ Route::get('/email/verify', function () {
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
 
-    return redirect('/home');
+    return redirect('/dashboard');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
 Route::post('/email/verification-notification', function (Request $request) {

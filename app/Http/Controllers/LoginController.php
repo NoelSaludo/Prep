@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 
 class LoginController extends Controller
 {
@@ -49,14 +50,17 @@ class LoginController extends Controller
         ]);
 
         $user = User::create([
-            'name' => $validated['name'],
+            'id' => uuid_create(),
+            'username' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
 
         Auth::login($user);
 
-        return redirect('/dashboard');
+        $user->sendEmailVerificationNotification();
+
+        return redirect()->route('verification.notice');
     }
 
     // Logout
@@ -65,7 +69,7 @@ class LoginController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        
+
         return redirect('/login');
     }
 }
