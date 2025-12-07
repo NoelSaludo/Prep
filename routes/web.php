@@ -17,6 +17,12 @@ Route::get('/register', [LoginController::class, 'showRegisterForm'])->name('reg
 
 // Process register form (POST)
 Route::post('/register', [LoginController::class, 'register']);
+
+// Forgot password routes
+Route::get('/forgot-password', [LoginController::class, 'showForgotPasswordForm'])->name('password.request');
+Route::post('/forgot-password', [LoginController::class, 'sendResetLink'])->name('password.email');
+Route::get('/reset-password/{token}', [LoginController::class, 'showResetPasswordForm'])->name('password.reset');
+Route::post('/reset-password', [LoginController::class, 'resetPassword'])->name('password.update');
 //
 // Redirect root to login
 Route::get('/', function () {
