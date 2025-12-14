@@ -31,6 +31,11 @@ class LoginController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
+        $user = User::where('email', $credentials['email'])->first();
+        if (!$user->hasVerifiedEmail()) {
+            $user->notify(new SendEmailVerificationNotification());
+            return redirect()->route('verification.notice');
+        }
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
