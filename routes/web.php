@@ -17,6 +17,8 @@ Route::get('/register', [LoginController::class, 'showRegisterForm'])->name('reg
 
 // Process register form (POST)
 Route::post('/register', [LoginController::class, 'register']);
+// Logout route
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Forgot password routes
 Route::get('/forgot-password', [LoginController::class, 'showForgotPasswordForm'])->name('password.request');
