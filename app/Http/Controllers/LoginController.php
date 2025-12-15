@@ -105,9 +105,12 @@ class LoginController extends Controller
     }
 
     // Show reset password form
-    public function showResetPasswordForm($token)
+    public function showResetPasswordForm(Request $request, $token)
     {
-        return view('reset-password', ['token' => $token]);
+        // The reset link includes the user's email as a query parameter
+        $email = $request->query('email');
+
+        return view('reset-password', ['token' => $token, 'email' => $email]);
     }
 
     // Reset password
