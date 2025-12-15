@@ -1,9 +1,10 @@
 <?php
+
+use App\Models\User;
+
 require __DIR__ . '/../vendor/autoload.php';
 $app = require __DIR__ . '/../bootstrap/app.php';
 $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-
-use App\Models\User;
 
 $email = $argv[1] ?? 'carranza.timothy12@gmail.com';
 $user = User::where('email', $email)->first();
