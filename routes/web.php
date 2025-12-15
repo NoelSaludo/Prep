@@ -33,6 +33,10 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
+Route::get('/recipes/{id}', [HomeController::class, 'show'])
+    ->name('recipes.show')
+    ->where('id', '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}');
+
 Route::get('/dashboard', function () {
     return redirect('/home');
 })->middleware('auth');
@@ -74,3 +78,5 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
 });
+
+Route::get('/recipes/{id}', [HomeController::class, 'show'])->name('recipes.show');

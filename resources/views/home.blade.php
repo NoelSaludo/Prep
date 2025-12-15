@@ -38,6 +38,7 @@
             border-radius: 25px;
             padding: 12px 20px 12px 45px;
             width: 100%;
+            color: #2D3748;
         }
         
         .filter-btn {
@@ -87,7 +88,7 @@
                     <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
-                    <input type="text" id="searchInput" class="search-input" placeholder="Search Ingredients">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search Ingredients (e.g., chicken, soy sauce)">
                 </div>
                 
                 <button class="filter-btn flex items-center gap-2" onclick="openFilterModal()">
@@ -119,8 +120,8 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="recipeGrid">
                 @forelse($recentRecipes as $recipe)
                     <div class="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer recipe-card" 
-                         data-ingredients="{{ implode(',', $recipe->ingredients->pluck('name')->toArray() ?? []) }}"
-                         onclick="openRecipeModal({{ $recipe->id }})">
+                         data-ingredients="{{ $recipe->ingredients ?? '' }}"
+                         onclick="openRecipeModal('{{ $recipe->id }}')">
                         <!-- Recipe Image -->
                         <div class="h-48 bg-gray-200 relative">
                             @if($recipe->image_url ?? false)
@@ -296,14 +297,20 @@
         
         // Filter recipes based on selected ingredients
         function filterRecipes() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
             const recipeCards = document.querySelectorAll('.recipe-card');
+            
+            // Split search term by comma and trim each ingredient
+            const searchIngredients = searchTerm 
+                ? searchTerm.split(',').map(item => item.trim()).filter(item => item.length > 0)
+                : [];
             
             recipeCards.forEach(card => {
                 const cardIngredients = card.dataset.ingredients.toLowerCase();
                 
-                // Check if card matches search term
-                const matchesSearch = !searchTerm || cardIngredients.includes(searchTerm);
+                // Check if card matches ALL search terms
+                const matchesSearch = searchIngredients.length === 0 || 
+                    searchIngredients.every(searchItem => cardIngredients.includes(searchItem));
                 
                 // Check if card matches selected ingredients (if any selected)
                 const matchesIngredients = selectedIngredients.length === 0 || 
