@@ -50,18 +50,11 @@
                 <form method="POST" action="{{ url('/reset-password') }}" class="space-y-5">
                     @csrf
                     <input type="hidden" name="token" value="{{ $token }}">
-                    
-                    <div>
-                        <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-prep-text-muted">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                                </svg>
-                            </span>
-                            <input type="email" id="email" name="email" placeholder="Email" required 
-                                class="w-full pl-12 pr-4 py-3 bg-prep-bg-light border border-prep-border-light rounded-xl focus:outline-none focus:ring-2 focus:ring-prep-green focus:border-transparent text-base transition-all"
-                                value="{{ $email ?? old('email') }}" readonly>
-                        </div>
+                    <input type="hidden" name="email" value="{{ $email ?? old('email') }}">
+
+                    <div class="mb-2">
+                        <p class="text-sm text-prep-text-muted">Resetting password for</p>
+                        <p class="font-medium text-prep-text-dark">{{ $email ?? old('email') }}</p>
                     </div>
                     
                     <div>
