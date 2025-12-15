@@ -74,6 +74,19 @@
                             <span class="font-bold text-prep-text-dark">{{ \Carbon\Carbon::parse($user->created_date)->format('M Y') }}</span>
                         </div>
                     </div>
+
+                    <!-- Logout Button -->
+                    <div class="mt-6 pt-4 border-t border-prep-border-light">
+                        <form action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-full font-semibold transition flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                </svg>
+                                Log Out
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
 
