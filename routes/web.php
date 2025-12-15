@@ -32,8 +32,9 @@ Route::post('/reset-password', [LoginController::class, 'resetPassword'])->name(
 Route::get('/', function () {
     return redirect('/login');
 });
+
 Route::get('/dashboard', function () {
-    return view('app');
+    return redirect('/home');
 })->middleware('auth');
 
 // Email verification routes
@@ -67,7 +68,7 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
-    
+
     // Profile routes - simplified
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
